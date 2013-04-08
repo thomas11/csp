@@ -29,9 +29,6 @@ func testWestEastProgram(routine func(a, b chan rune), input, expected string, t
 
 	received := make([]rune, 0, 50)
 	for r := range east {
-		if r == 0 {
-			break
-		}
 		received = append(received, r)
 	}
 	if string(received) != expected {
@@ -69,9 +66,6 @@ func TestDISASSEMBLE(t *testing.T) {
 
 	actual := make([]rune, 0, 162)
 	for r := range X {
-		if r == 0 {
-			break
-		}
 		actual = append(actual, r)
 	}
 

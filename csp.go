@@ -56,14 +56,12 @@ import (
 //
 // As an addition to the paper's example, we stop when west is closed,
 // otherwise we would just hang at this point. To indicate this to the
-// client, we send the zero rune to east. In real world code, in-band
-// return codes suck, so we'd better have a separate channel to send status
-// messages.
+// client, we close the east channel.
 func S31_COPY(west, east chan rune) {
 	for r := range west {
 		east <- r
 	}
-	east <- 0
+	close(east)
 }
 
 // 3.2 SQUASH
@@ -77,8 +75,7 @@ func S31_COPY(west, east chan rune) {
 // characters as-is. Go's UTF8 support allows to treat the arrow like any
 // other character.
 func S32_SQUASH(west, east chan rune) {
-	for {
-		c := <-west
+	for c := range west {
 		if c != '*' {
 			east <- c
 		} else {
@@ -91,6 +88,7 @@ func S32_SQUASH(west, east chan rune) {
 			}
 		}
 	}
+	close(east)
 }
 
 // Hoare adds a remark to 3.2 SQUASH: "(2) As an exercise, adapt this
@@ -99,8 +97,7 @@ func S32_SQUASH(west, east chan rune) {
 // from west to east if west did not supply another character after a
 // timeout, or if west was closed in the meantime.
 func S32_SQUASH_EXT(west, east chan rune) {
-	for {
-		c := <-west
+	for c := range west {
 		if c != '*' {
 			east <- c
 		} else {
@@ -122,6 +119,7 @@ func S32_SQUASH_EXT(west, east chan rune) {
 			}
 		}
 	}
+	close(east)
 }
 
 // 3.3 DISASSEMBLE
@@ -139,7 +137,7 @@ func S33_DISASSEMBLE(cardfile chan []rune, X chan rune) {
 		}
 		X <- ' '
 	}
-	X <- 0
+	close(X)
 }
 
 // 3.4 ASSEMBLE
