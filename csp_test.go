@@ -336,6 +336,27 @@ func TestBuffer(t *testing.T) {
 	}
 }
 
+func TestSemaphore(t *testing.T) {
+	s := S52_NewSemaphore()
+
+	// We cannot decrement before an increment.
+	select {
+	case s.dec <- struct{}{}:
+		t.Error("Shouldn't be able to dec before inc")
+	case <-time.After(2 * time.Second):
+		// ok, dec blocked
+	}
+
+	// After an inc, dec will work.
+	s.inc <- struct{}{}
+	select {
+	case s.dec <- struct{}{}:
+		// ok
+	case <-time.After(2 * time.Second):
+		t.Error("Should be able to dec after inc")
+	}
+}
+
 // That's not actually a test, we just let the scenario run for 10
 // seconds so we can observe the log.
 func TestDiningPhilosophers(t *testing.T) {

@@ -606,17 +606,20 @@ func S52_NewSemaphore() *S52_Semaphore {
 	val := 0
 
 	go func() {
+		// We need at least one increment before we can react to dec.
+		<-s.inc
+		val++
+
 		for {
 			select {
 			case <-s.inc:
 				val++
-			default:
-			}
-			if val > 0 {
-				select {
-				case <-s.dec:
-					val--
-				default:
+			case <-s.dec:
+				val--
+				// If val is 0, we need an inc before we can continue.
+				if val == 0 {
+					<-s.inc
+					val++
 				}
 			}
 		}
