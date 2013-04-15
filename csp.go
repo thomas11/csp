@@ -445,10 +445,11 @@ func S45_ParIntSet(limit int) (chan int, chan S45_HasQuery, chan chan int, chan 
 					if q.N <= n {
 						q.Response <- q.N == n
 					} else {
-						// We don't have q, ask pass on the request.
 						if i == limit {
+							// We've reached the limit of the set.
 							q.Response <- false
 						} else {
+							// We don't have q, pass on the request.
 							has[i+1] <- q
 						}
 					}
@@ -709,7 +710,7 @@ func S53_DiningPhilosophers(runFor time.Duration) {
 		fmt.Printf("%v ate.\n", i)
 	}
 
-	// A philospher leads a simple life.
+	// A philosopher leads a simple life.
 	philosopher := func(i int) {
 		for {
 			think(i)
