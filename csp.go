@@ -79,10 +79,10 @@ func S32_SQUASH(west, east chan rune) {
 		if c != '*' {
 			east <- c
 		} else {
-			c2 := <-west
-			if c2 != '*' {
+			c = <-west
+			if c != '*' {
+				east <- '*'
 				east <- c
-				east <- c2
 			} else {
 				east <- '↑'
 			}
