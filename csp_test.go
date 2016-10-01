@@ -40,6 +40,10 @@ func TestCOPY(t *testing.T) {
 	testWestEastProgram(S31_COPY, "Hello ** World***", "Hello ** World***", t)
 }
 
+func TestSQUASH(t *testing.T) {
+	testWestEastProgram(S32_SQUASH, "Hello ** World**!", "Hello ↑ World↑!", t)
+}
+
 func TestSQUASH_EXT(t *testing.T) {
 	testWestEastProgram(S32_SQUASH_EXT, "Hello ** World***", "Hello ↑ World↑*", t)
 }
